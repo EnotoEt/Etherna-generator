@@ -2,7 +2,7 @@
 (function(root){'use strict';
 const clone=x=>JSON.parse(JSON.stringify(x));
 const key='eterna-npc-archive-v1';
-const metaFields=['campaign','location','importance','status','relation','tags','notes'];
+const metaFields=['campaign','location','importance','status','relation','tags','notes','locationId'];
 const options={importance:['Ключевой','Второстепенный','Случайный'],status:['Жив','Мёртв','Пропал','Неизвестно'],relation:['Дружественное','Нейтральное','Враждебное']};
 const uid=()=>globalThis.crypto?.randomUUID?.()||'npc-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2);
 const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
