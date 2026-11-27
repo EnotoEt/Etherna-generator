@@ -14,5 +14,13 @@ function createAppearance(profiles,rng=Math.random){
  function valid(a,race){return !!a&&a.race===race&&(race==='Эльф'?['Светлый','Тёмный'].includes(a.type):a.type===null)&&appearanceFields.every(f=>typeof a.fields?.[f]==='string'&&a.fields[f].length>0);}
  return {generate,reroll,valid,eligible};
 }
-root.EternaEngine={create,pick,weighted,createAppearance,appearanceFields};if(typeof module!=='undefined')module.exports=root.EternaEngine;
+const personalityFields=['Концепт','Долгосрочная цель','Краткосрочная цель','Недостаток / проблема','Свободный аспект'];
+function createPersonality(tables,rng=Math.random){
+ const roll=field=>weighted(tables[field],x=>x.weight,rng).value;
+ function valid(p){return !!p&&personalityFields.every(f=>typeof p[f]==='string'&&p[f].trim().length>0);}
+ function generate(previous={},locked=[]){return Object.fromEntries(personalityFields.map(f=>[f,locked.includes(f)&&typeof previous?.[f]==='string'&&previous[f].trim()?previous[f]:roll(f)]));}
+ function reroll(p,field){if(!personalityFields.includes(field))throw Error('Неизвестное поле');return {...p,[field]:roll(field)};}
+ return {generate,reroll,valid};
+}
+root.EternaEngine={create,pick,weighted,createAppearance,appearanceFields,createPersonality,personalityFields};if(typeof module!=='undefined')module.exports=root.EternaEngine;
 })(globalThis);
