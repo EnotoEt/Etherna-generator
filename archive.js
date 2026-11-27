@@ -2,7 +2,7 @@
 (function(root){'use strict';
 const clone=x=>JSON.parse(JSON.stringify(x));
 const key='eterna-npc-archive-v1';
-const metaFields=['campaign','location','importance','status','relation','tags','notes','locationId'];
+const metaFields=['campaign','location','importance','status','relation','tags','notes','locationId','cityId','objectId'];
 const options={importance:['Ключевой','Второстепенный','Случайный'],status:['Жив','Мёртв','Пропал','Неизвестно'],relation:['Дружественное','Нейтральное','Враждебное']};
 const uid=()=>globalThis.crypto?.randomUUID?.()||'npc-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2);
 const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
@@ -16,6 +16,7 @@ function create({races,looks,personality,moods,storage}){
   if(n.personality!=null&&!personality.valid(n.personality))throw Error('Некорректная личность');
   if(n.mood!=null&&!moods.valid(n.mood))throw Error('Некорректное настроение');
   if(n.meta!=null&&(!plain(n.meta)||metaFields.some(k=>n.meta[k]!=null&&typeof n.meta[k]!=='string')||(n.meta.favorite!=null&&typeof n.meta.favorite!=='boolean')))throw Error('Некорректные дополнительные поля');
+  if(n.meta?.locationId&&n.meta?.cityId||n.meta?.objectId&&!n.meta?.cityId)throw Error('Противоречивые ссылки NPC');
   const result={name:n.name,surname:n.surname,job:n.job,race:n.race,sex:n.sex,context:n.context,meta:meta(n.meta)};
   if(n.appearance!=null)result.appearance={race:n.race,type:n.appearance.type,fields:Object.fromEntries(root.EternaEngine.appearanceFields.map(k=>[k,n.appearance.fields[k]]))};
   if(n.personality!=null)result.personality=Object.fromEntries(root.EternaEngine.personalityFields.map(k=>[k,n.personality[k]]));
