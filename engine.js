@@ -22,5 +22,10 @@ function createPersonality(tables,rng=Math.random){
  function reroll(p,field){if(!personalityFields.includes(field))throw Error('Неизвестное поле');return {...p,[field]:roll(field)};}
  return {generate,reroll,valid};
 }
-root.EternaEngine={create,pick,weighted,createAppearance,appearanceFields,createPersonality,personalityFields};if(typeof module!=='undefined')module.exports=root.EternaEngine;
+function createMood(table,rng=Math.random){
+ function generate(){const {id,name,manifestation,complication}=weighted(table,x=>x.weight,rng);return {id,name,manifestation,complication};}
+ function valid(m){return !!m&&['id','name','manifestation','complication'].every(k=>typeof m[k]==='string'&&m[k].trim().length>0);}
+ return {generate,valid};
+}
+root.EternaEngine={createMood,create,pick,weighted,createAppearance,appearanceFields,createPersonality,personalityFields};if(typeof module!=='undefined')module.exports=root.EternaEngine;
 })(globalThis);
